@@ -283,7 +283,7 @@ function printSolution(board, polyomino, result)
 
 	for(var i = 0; i < max; i++) {
 		displayText("(" + (i+1) + ")\n");
-		printBoard(result.slovedBoard[i], polyomino.boardX, polyomino.boardY );
+		printBoard(result.solvedBoard[i], polyomino.boardX, polyomino.boardY );
 	}
 	
 	if(result.totalAnswer < polyomino.maxSolution) {

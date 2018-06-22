@@ -25,3 +25,6 @@ block colors:
 
 just for fixed: chrome sets cursor to text while dragging, why?
 	http://stackoverflow.com/questions/2745028/chrome-sets-cursor-to-text-while-dragging-why
+
+Solucion problema poliominos: 
+	http://godel.hws.edu/java/pent1.html

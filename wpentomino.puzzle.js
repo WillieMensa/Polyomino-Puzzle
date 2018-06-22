@@ -44,11 +44,11 @@ var versionString="1.3"
 //	https://www.w3schools.com/colors/colors_picker.asp
 //	http://www.colorhexa.com/
 //-------------------------------------
-var BACKGROUND_COLOR = "#FAFAD2"; //Light Goldenrod Yellow
+var BACKGROUND_COLOR = "#ddff99";		//	"#FAFAD2"; //Light Goldenrod Yellow
 var BACKGROUND_BOARD_COLOR = "white";
 
-var BORDER_COLOR = "#006600";  
-var BORDER_STROKE_COLOR = "yellow";
+var BORDER_COLOR = "#666600";  
+var BORDER_STROKE_COLOR = "#ffff66";			//	"yellow";
 
 var BOARD_COLOR = "#B7F7DE"; //light green
 var FIXED_BLOCK_COLOR = "#D0D0D0";  //light gray
@@ -100,19 +100,19 @@ var SCREEN_BOARD_X;		//	ordenada X de tablero
 var SCREEN_BOARD_Y;		//	ordenada Y de tablero
 var BOARD_WIDTH;		//	ancho del tablero en unidades de tablero
 var BOARD_HIGH;			//	alto del tablero en unidades de tablero
-var boardStartX;
+var boardStartX;		//	coordenadas para centrar tablero
 var boardStartY;
 
 var gBoardSizeId = 0;	//board size. Identifica la opcion elegida para tamaño de tablero
-var gLevelId = 1; //play level 
+var gLevelId = 1;		//play level 
 
 var gStage;            //kinetic stage
 var gBackgroundLayer;  //kinetic layer
 var gBoardLayer;       //kinetic layer
 var gMessageLayer;     //kinetic layer
 
-var gBlockGroup; //este array contiene datos de los poliominos
-var gPolyGroup;  //for output on screen
+var gBlockGroup;		//este array contiene datos de los poliominos / poligonos a tratar
+var gPolyGroup;			//for output on screen
 
 //---------------------------
 // For calculate board state 
@@ -146,10 +146,13 @@ function init()
 	
 	//initial input 
 	document.getElementById('checkButton').checked=false;
-	document.getElementById('boardSizeButton').options[gBoardSizeId].selected = true;
-	document.getElementById('levelButton').options[gLevelId-1].selected  = true;
-	
-	if (DEBUG) { console.log("lin 143, gBoardSizeId: " + gBoardSizeId ); };
+
+	//	*** eliminar ***
+	//	Elimino los botones para elegir tablero y nivel de dificultad
+	//	document.getElementById('boardSizeButton').options[gBoardSizeId].selected = true;
+	//	document.getElementById('levelButton').options[gLevelId-1].selected  = true;
+	//	if (DEBUG) { console.log("lin 143, gBoardSizeId: " + gBoardSizeId ); };
+
 	initScreenVariable();
 
 	initScreenPosColor();	
@@ -227,8 +230,10 @@ function initBoardSize(boardSize, level)
 	gLevelId = level;
 	
 	reNewLevelOption();
+	/*
 	document.getElementById('boardSizeButton').options[gBoardSizeId].selected = true;
 	document.getElementById('levelButton').options[gLevelId-1].selected  = true;
+	*/
 }
 
 //-------------------------------------------------------------------
@@ -483,7 +488,7 @@ function initBoardState(boardX, boardY, numOfFixedBlocks, newPuzzle)
 		
 		clearFixedBlock();
 		if(numOfFixedBlocks) {
-			//random assign fixed block to board from sloved board
+			//random assign fixed block to board from solved board
 			result = findAnswer(gBoardState, 0);
 			addFixedBlock2Layer(result.op, numOfFixedBlocks);
 		}	
@@ -575,13 +580,13 @@ function clearFixedBlock()
 
 //--------------------------
 //	Add fixed block to layer
-//	aqui se estarian colocando en el tablero los poligonos para ayuda en niveles de baja dificultad
+//	aqui se estarian colocando en el tablero los poligonos fijos para ayuda en niveles de baja dificultad
 //--------------------------
 function addFixedBlock2Layer(op, numOfFixedBlocks)
 {
 	if (DEBUG)
 	{
-		console.log("linea 572: Ingresando a addFixedBlock2Layer(op, numOfFixedBlocks)");
+		console.log("linea 584: Ingresando a addFixedBlock2Layer(op, numOfFixedBlocks)");
 		console.log("op.leftRightFlip: " + op.leftRightFlip );
 		console.log("op.upDownFlip   : " + op.upDownFlip    );
 		console.log("op.rotate       : " + op.rotate        );
@@ -618,7 +623,7 @@ function addFixedBlock2Layer(op, numOfFixedBlocks)
 			};
 			*/
 
-			var pos = SlovedPos2BoardPos(op, gBlockGroup[id].pos)
+			var pos = solvedPos2BoardPos(op, gBlockGroup[id].pos)
 
 			var leftUpPos = getLeftUpPos(block);
 			var centerPos = getCenterPos(block);
@@ -718,10 +723,10 @@ function dupOpBlock(srcBlock, op, normalize)
 }
 
 //--------------------------------------------------------
-// convert sloved board position to board state position
+// convert solved board position to board state position
 // for (gBoardState)
 //--------------------------------------------------------
-function SlovedPos2BoardPos(op, pos)
+function solvedPos2BoardPos(op, pos)
 {
 	var boardPos = { x:pos.x, y:pos.y };
 	
@@ -755,14 +760,13 @@ function addBackgroundLayer()
 		x: textOffset, 
 		y: textOffset,
 		text: "Pentominos Puzzle",
-		fill: 'green',			//		fill: BACKGROUND_COLOR,
+		fill: 'green',					//	fill: BACKGROUND_COLOR,
 		fontSize: titleFontSize,
-		//fontFamily: "Calibri",
-	
+		//fontFamily: "Calibri",	
 		fontStyle:"bold",
 		shadowColor: 'black',
 		shadowBlur: 05,
-		shadowOffset: [2, 2],
+		shadowOffset: [4,4],			//	2, 2],
 		shadowOpacity:0.7
 	});	
 
@@ -906,8 +910,8 @@ function addBlock2Layer(fixedBlock)
 {
 	if (DEBUG) 
 	{
-		//	alert("Ingresando a addBlock2Layer(fixedBlock); linea 877");
-		//	console.log("fixedBlock: " + fixedBlock );
+		console.log("linea 877: Ingresando a addBlock2Layer(fixedBlock); ");
+		console.log("fixedBlock: " + fixedBlock );
 	}
 
 
@@ -1923,8 +1927,8 @@ function findAnswer(board, inUsedFromPoly)
 	result = answer.find();
 	
 	if(result.totalAnswer > 0) {
-		//notes: copy back to slovedBoard not slovedBoard[0]
-		result.slovedBoard = dupAnswerBoard2ScreenBoard(result.slovedBoard[0], op);
+		//notes: copy back to solvedBoard not solvedBoard[0]
+		result.solvedBoard = dupAnswerBoard2ScreenBoard(result.solvedBoard[0], op);
 		result.op = op;
 	}
 	return result;
@@ -2159,7 +2163,7 @@ function check()
 
 	} else {
 		writeMessage("");
-		//dumpBoard(result.slovedBoard[0]);
+		//dumpBoard(result.solvedBoard[0]);
 		
 		console.log("Elapsed Time : " + result.elapsedTime + "s");
 	}
@@ -2174,7 +2178,7 @@ function checkButton(checked)
 	checkSolution = checked;
 
 	writeMessage("");
-	if(gBlockCellUsed >= gTotalBlockCell) return; //sloved
+	if(gBlockCellUsed >= gTotalBlockCell) return; //solved
 	if(checkSolution) check();
 }
 
@@ -2284,7 +2288,7 @@ function hintsButton()
 
 	disableAllButton();
 	if(!animateBlockBack(moveTime)) moveTime = 0;
-	flashObject = animateHintsBlock(result.slovedBoard, result.op, moveTime);
+	flashObject = animateHintsBlock(result.solvedBoard, result.op, moveTime);
 	
 	enableButtonAfterStopRunning(flashObject);
 }
@@ -2421,10 +2425,10 @@ function animateBlockBack(moveTime)
 //---------------------------------
 // random flash a available block 
 //---------------------------------
-function animateHintsBlock(slovedBoard, op, startFlashTime)
+function animateHintsBlock(solvedBoard, op, startFlashTime)
 {
 	var	flashOutline;
-	var result = findAvailableBlock(slovedBoard);
+	var result = findAvailableBlock(solvedBoard);
 	
 	var startX = boardStartX + result.x * BLOCK_CELL_SIZE;	
 	var startY = boardStartY + result.y * BLOCK_CELL_SIZE;	
@@ -2445,11 +2449,11 @@ function animateHintsBlock(slovedBoard, op, startFlashTime)
 // random find a available block 
 // (next to the exist one)
 //------------------------------------------------
-function findAvailableBlock(slovedBoard) 
+function findAvailableBlock(solvedBoard) 
 {
 	var fromVertical = Math.floor(Math.random()*2); //0: search from horizon, 1: search from vertical
-	var boardX = slovedBoard.length-1;
-	var boardY = slovedBoard[0].length-1;
+	var boardX = solvedBoard.length-1;
+	var boardY = solvedBoard[0].length-1;
 	var blockId, polyId;
 
 	if(fromVertical) { 
@@ -2457,7 +2461,7 @@ function findAvailableBlock(slovedBoard)
 		outloopV0:
 		for(var x= 1; x < boardX; x++) {
 			for(var y= 1; y < boardY; y++) {
-				blockId = slovedBoard[x][y]-1;
+				blockId = solvedBoard[x][y]-1;
 				polyId = gBlockGroup[blockId].polyId; //convert block id to poly id
 				if(polyId >= 0 && gPolyGroup[polyId].poly.pos.x < 0) {
 					//block is not in gBoardState, found it !
@@ -2470,7 +2474,7 @@ function findAvailableBlock(slovedBoard)
 		outloopV1:
 		for(var y= 1; y < boardY; y++) {
 			for(var x= 1; x < boardX; x++) {
-				if (slovedBoard[x][y]-1 == blockId) {
+				if (solvedBoard[x][y]-1 == blockId) {
 					break outloopV1;
 				}	
 			}
@@ -2481,7 +2485,7 @@ function findAvailableBlock(slovedBoard)
 		outloopH:
 		for(var y= 1; y < boardY; y++) {
 			for(var x= 1; x < boardX; x++) {
-				blockId = slovedBoard[x][y]-1;
+				blockId = solvedBoard[x][y]-1;
 				polyId = gBlockGroup[blockId].polyId; //convert block id to poly id
 
 				if(polyId >= 0 && gPolyGroup[polyId].poly.pos.x < 0) {
@@ -2593,7 +2597,8 @@ function reNewLevelOption()
 	var select = document.getElementById('levelButton');
 	var option;
 
-	if (DEBUG) { console.log("reNewLevelOption(), lin 2496");	};  
+	//	if (DEBUG) { console.log("reNewLevelOption(), lin 2496");	};  
+
 	//---------------------------------------------
 	// clear select options
 	// reference: http://www.somacon.com/p542.php
@@ -2914,8 +2919,8 @@ function writeMessage(message) {
 	var context = gMessageLayer.getContext();
 	
 	gMessageLayer.clear();
-	context.font = '14pt arial';
-	context.fillStyle = '#800000';
+	context.font = '20pt arial';
+	context.fillStyle = '#882211';
 	context.fillText(message, STAGE_X/2-message.length*5, STAGE_Y/2+BLOCK_CELL_SIZE * (SCREEN_BOARD_Y/1.2));
 	gBoardLayer.draw(); //FOR: firefox first time will not display 10/21/2012
 }

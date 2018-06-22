@@ -1,11 +1,28 @@
-# Pentomino puzzle a partir de
-## Polyomino Puzzle & Solver
-### Este desarrollo parte del codigo creado por Simon Hung
+# Pentomino puzzle
+Desarrollado a partir de Polyomino Puzzle & Solver, codigo creado por Simon Hung
 Utiliza (por ahora) [KineticJS](http://kineticjs.com).
 
-19/6/2018
-Versión 0.0.1 
+### Versiones
+19/6/2018 - Versión 0.0.1 
+21/6/2018 - Versión 0.0.2	-	Iniciamos la conversión a un puzzle de pentominos en tablero de 8 x 8.
+
+### Generalidades
 Españolización del original. La utlizaré como master para volver en caso de no funcionar las variantes que se vayan planteando.
+El objetivo es crear un puzzle con pentominos en una tablero de 8 x 8 utilizando los doce pentominos y ocupando previamente 4 cuadraditos con cuadróminos o cuatro cuadraditos independientes.
+
+## Funcionamiento de la aplicación
+La ocupación de celdas fijas, cudróminos o cuadraditos separados, define diferentes problemas. Estos serán identificados / codificados para tener una secuencia fija para el jugador.
+Los problemas se iran desarrollando secuencialmente (o siguiendo el orden que elija el jugador).
+Se deberá llevar una tabla de registro donde se guarden los problemas resueltos por el jugador, los puntos obtenidos en cada caso y el total de puntos acumulados.
+También debería presentarse una tabla de clasificación general de acuerdo a los puntos obtenidos.
+
+En cada problema el jugador tendrá la posibilidad de solicitar ayuda. Por cada ayuda solicitada se descontará un punto del total posible. Se podrán solicitar hasta una máximo de x ayudas (por ejemplo: 8)
+De forma tal que el jugador esté obligado a resolver, al menos, un problema más simple y justifique los puntos que obtenga.
+
+Tabla de clasificación general y tabla de logros personal.
+
+El cuadrómino o los cuadraditos estarán programados previamente. Cada disposición da lugar a un problema diferente; tendrá asignado un número o codigo. Creo que para los jugadores es mejor presentarlos ordenados numericamente.
+El jugador podrá seguir la secuencia numérica o elegir los numeros arbitrariamente.
 
 
 ### Referencias
@@ -34,3 +51,12 @@ block colors:
 
 just for fixed: chrome sets cursor to text while dragging, why?
 	http://stackoverflow.com/questions/2745028/chrome-sets-cursor-to-text-while-dragging-why
+
+Solucion problema poliominos: 
+	http://godel.hws.edu/xJava/PentominosSolver/index.html
+
+Fuentes del pentomino solver en java:
+	http://godel.hws.edu/xJava/PentominosSolver/source/
+
+clear select options reference: 
+	http://www.somacon.com/p542.php

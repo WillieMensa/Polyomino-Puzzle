@@ -246,7 +246,7 @@ function polySolution()
 
 	var totalAnswer;    //total answer find
 	var totalBlockUsed; //total block already used 
-	var slovedBoard = []; //solution board
+	var solvedBoard = []; //solution board
 	var searchEnd; //end of search
 
 	//---------------------------------
@@ -274,7 +274,7 @@ function polySolution()
 	// output: {
 	//    totalAnswer: how many answer find 
 	//    elapsedTime: elapsed time
-	//    slovedBoard: array for answer board, 
+	//    solvedBoard: array for answer board, 
 	//                 length = totalAnswer
 	// } 
 	//------------------------------------------
@@ -289,7 +289,7 @@ function polySolution()
 			//all blocks are used or board full
 			return { totalAnswer: 0,
 					elapsedTime: 0,
-					slovedBoard: null
+					solvedBoard: null
 			};
 		}
 		
@@ -299,7 +299,7 @@ function polySolution()
 		
 		return { totalAnswer: totalAnswer,
 			     elapsedTime: (endTime-startTime)/1000,
-				 slovedBoard: slovedBoard
+				 solvedBoard: solvedBoard
 		};
 	}
 	
@@ -350,13 +350,13 @@ function polySolution()
 	//-------------
 	// save answer 
 	//-------------
-	function saveSlovedBoard()
+	function savesolvedBoard()
 	{
-		slovedBoard[totalAnswer] = [];
+		solvedBoard[totalAnswer] = [];
 		for(var x = 0; x < (boardX+2) ; x++) {
-			slovedBoard[totalAnswer][x] = [];
+			solvedBoard[totalAnswer][x] = [];
 			for(var y = 0; y < (boardY+2) ; y++) {
-				slovedBoard[totalAnswer][x][y] = board[x][y];
+				solvedBoard[totalAnswer][x][y] = board[x][y];
 			}
 		}
 		totalAnswer++;
@@ -387,7 +387,7 @@ function polySolution()
 					if((++totalBlockUsed >= blockGroup.length) || (nextPos.x == -1 && nextPos.y == -1)) {
 						//(1) all blocks have put into board
 						//(2) board is filled with blocks
-						saveSlovedBoard();
+						savesolvedBoard();
 						if(maxSolution >= 0 && totalAnswer >= maxSolution) {
 							searchEnd = 1;
 						}

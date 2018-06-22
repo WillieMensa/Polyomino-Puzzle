@@ -262,10 +262,10 @@ function move2XYRunning()
 // for demo to move block to board
 //-----------------------------------
 var demoBlockInfo;
-function randomAvailableBlock(slovedBoard)
+function randomAvailableBlock(solvedBoard)
 {
-	var boardX = slovedBoard.length-1;
-	var boardY = slovedBoard[0].length-1;
+	var boardX = solvedBoard.length-1;
+	var boardY = solvedBoard[0].length-1;
 
 	demoBlockInfo = [];
 	for(var id=0; id < gBlockGroup.length; id++) {
@@ -280,7 +280,7 @@ function randomAvailableBlock(slovedBoard)
 				outloop:
 				for(var y= 1; y < boardY; y++) {
 					for(var x= 1; x < boardX; x++) {
-						if (slovedBoard[x][y]-1 == id) {
+						if (solvedBoard[x][y]-1 == id) {
 							break outloop;
 						}
 					}	
@@ -589,10 +589,10 @@ function doDemo(demoCount)
 		//try find answer
 		result = findAnswer(gBoardState, 1);
 	}
-	randomAvailableBlock(result.slovedBoard);
+	randomAvailableBlock(result.solvedBoard);
 
 	if(!animateBlockBack(moveTime)) moveTime = 0;
-	//dumpBoard(result.slovedBoard);
+	//dumpBoard(result.solvedBoard);
 	
 	initDemoVariable();
 	animateBlock2Board(moveTime, result.op);
