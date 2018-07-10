@@ -1,31 +1,8 @@
 ﻿<html>
 <head>
-<title>Pentominos Puzzle en desarrollo</title>
-<!-- 
-	Proximos pasos
-		eliminar la opcion de niveles de dificultad; quitar boton
-		detectar la forma de marcar las celditas ocupadas.
-		incorporar un cuadrominos en diferentes posiciones para los distintos problemas
-		mantener la ayuda
-		Impedir el modo autonomo de resolución (demo)
-
-	28/6/2018
-		Siendo que vamos emplear una sola dimension del tablero (8X8) los manejos 
-		del mismo basdos en las dimensiones *** boardSize ***
-		deberian ser eliminados para simplificar	
-
-	23/6/2018
-		Habria que agregar un style a wCuadromGroup...
-
-	18/6/2018	
-		Adecuacion de Willie Verger para un rompecabezas con pentominos
-		wpentomino.puzzle.js
-		descripcion de variables y funciones del script 
-
-
--->
+<title>Pentominos Puzzle</title>
 <meta http-equiv="X-UA-Compatible" content="chrome=1, IE=edge">
-<meta name="description" content="Investigando Pentominos Puzzle">
+<meta name="description" content="Pentominos Puzzle Solver (智慧拼盤)">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link href="willie.ico"  rel="shortcut icon" >
 <style>
@@ -38,7 +15,7 @@
 		border: 0;
 	}
 	#hintsButton, #newButton, #resetButton, #demoButton   {
-		width: 70px;
+		width: 50px;
 		padding: 5px;
 		display: block;
 		margin-top: 5px;
@@ -58,47 +35,35 @@
 		font:  20px arial;
 	}
 </style>
-
-<!-- utilizo la version extendida de kinetics.js para tratar de entender el funcionamiento -->
-<script src="kineticJS/kinetic-v4.4.3.js"></script>
-
+<script src="kineticJS/kinetic-v4.4.3.min.js"></script>
 <script src="animate.js"></script>
-
 <script src="polyDemo.js"></script>
-
-<!-- el script que sigue está basado en pentomino.puzzle.js del original -->
-<script src="pentomino-puzzle-05.js"></script>
-
-<!-- 
-<script src="wpentomino.puzzle.js"></script>
-<script src="wfunciones.js"></script>
- -->
+<script src="pentomino.puzzle.js"></script>
 <script src="polySolution.js"></script>
 <script src="polyomino5.js"></script>
-<script src="polyomino4.js"></script>
-
-
 </head>
 <body> 
 <div id="container"></div>
-
-<!-- 
 <div id="boardSize">
 	<select id="boardSizeButton" onchange="boardSizeButton(this.value);">
-		<option value="3">&nbsp;&nbsp;8X8&nbsp;</option>
+		<option value="1" >&nbsp;&nbsp;5X6&nbsp;</option>
+		<option value="2">&nbsp;&nbsp;5X8&nbsp;</option>
+		<option value="3">&nbsp;&nbsp;5X10&nbsp;</option>
+		<option value="4">&nbsp;&nbsp;6X10&nbsp;</option>
 	</select>
 </div>	
 
 <div id="level">
 	<select id="levelButton" onchange="levelButton(this.value);">
 		<option value="1">Level 1</option>
+		<option value="2">Level 2</option>
+		<option value="3">Level 3</option>
+		<option value="4">Level 4</option>
 	</select>
 </div>
- -->
-
-
-<div id="hints"><input type="button" id="hintsButton" onclick="hintsButton();" value="Ayudita"></div>
-<div id="reset"><input type="button" id="resetButton" onclick="resetButton();" value="Reinicia"></div>
+	
+<div id="hints"><input type="button" id="hintsButton" onclick="hintsButton();" value="Hints"></div>
+<div id="reset"><input type="button" id="resetButton" onclick="resetButton();" value="Reset"></div>
 <div id="check"><input type="checkbox" id="checkButton" onclick="checkButton(this.checked);">
 	<span id="checkboxtext">Check Solution</span>
 </div>

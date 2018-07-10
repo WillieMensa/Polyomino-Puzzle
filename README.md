@@ -25,6 +25,43 @@ El cuadrómino o los cuadraditos estarán programados previamente. Cada disposició
 El jugador podrá seguir la secuencia numérica o elegir los numeros arbitrariamente.
 
 
+### ----------------------------------
+## Internals
+
+Las celdas del tablero estan inicializadas con un cero. 
+gBoardState es la variable que guarda el estado de las celdas del tablero: 
+	0: libres
+	99: ocupadas por la pieza 99
+
+
+Las soluciones vienen en una clase ()generalmente identificada como result) que tiene
+	totalAnswer
+	elapsedTime
+	solvedBoard: un arreglo de tres dimensiones: solvedBoard[totalAnswer][x][y]
+	op
+
+
+### Etapa preparacion del puzzle
+
+Las funciones que siguen se ejecutan en la etapa preparatoria
+
+####	function createBoard(boardX, boardY)		
+	genera / crea un tablero nuevo con sus celdas inicializadas a cero
+
+####	gBoardState = createBoard(SCREEN_BOARD_X, SCREEN_BOARD_Y); //external function
+####	clearPolyInsertOrder(); //for hints 
+####	randomBlock(gBlockGroup); //external function
+####	randomBlockStyle(gBlockGroup); //external function
+####	randomPolyInitPos(gBlockGroup.length - numOfFixedBlocks);
+	
+####	clearFixedBlock();
+
+
+
+En averiguacion:
+Como se inserta cada poliomino. Donde queda registrado el poliomino utilizado y las celdas ocupadas???
+
+
 ### Referencias
 
 *[Polyomino wiki](https://en.wikipedia.org/wiki/Polyomino)

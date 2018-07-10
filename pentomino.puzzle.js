@@ -1,42 +1,27 @@
-﻿/*	=============================================================================
-	23/6/2018
-		Habria que agregar un style a wCuadromGroup...
-
-	18/6/2018	
-		Adecuacion de Willie Verger para un rompecabezas con pentominos
-		wpentomino.puzzle.js
-		descripcion de variables y funciones del script 
-
-	include files: polyomino5.js, polySolution.js, animate.js, polyDemo.js
-
-	v1.3
-	12/16/2014 - (1) Bug fixed for Chrome 38.x
-				  (1.1) remark "context.stroke(context);"
-				  (1.2) change lib version to kinetic-v4.4.3
-
-	v1.2
-	07/10/2013 - (1) Bug fixed for Chrome 28.0.1500.71 m
-				  change context.fill(context) to context.fill() 
-
-	v1.1
-	04/04/2013 - (1) For work with Chrome 26.0.1410.43m move to kineticJS 4.4.0
-			  (2) Support tranditional chinese 
-
-	v1.0
-	11/05/2012 - recover play mode info after demo back and change board color
-
-	11/03/2012 - add demo function
-	10/26/2012 - create by Simon Hung
-	=============================================================================
-
-	OBSERVACIONES
-
-	Se utilizan dos tipos de coordenadas:
-		a/ unidades de pantalla: las coordenadas de la pantalla o canvas y
-		b/ unidades de tablero: donde cada cuadrado unitario que compone un poliomino es una particula unitaria. 
-
-
-*/
+﻿//=============================================================================
+// Pentomino Puzzle
+//
+// include files: polyomino5.js, polySolution.js, animate.js, polyDemo.js
+//
+// v1.3
+// 12/16/2014 - (1) Bug fixed for Chrome 38.x
+//                  (1.1) remark "context.stroke(context);"
+//                  (1.2) change lib version to kinetic-v4.4.3
+//
+// v1.2
+// 07/10/2013 - (1) Bug fixed for Chrome 28.0.1500.71 m
+//                  change context.fill(context) to context.fill() 
+//
+// v1.1
+// 04/04/2013 - (1) For work with Chrome 26.0.1410.43m move to kineticJS 4.4.0
+//              (2) Support tranditional chinese 
+//    
+// v1.0
+// 11/05/2012 - recover play mode info after demo back and change board color
+//
+// 11/03/2012 - add demo function
+// 10/26/2012 - create by Simon Hung
+//=============================================================================
 
 //=========
 // define
@@ -44,14 +29,14 @@
 var versionString="1.3"
 
 //-------------------------------------
-//	https://www.w3schools.com/colors/colors_picker.asp
-//	http://www.colorhexa.com/
+//http://www.tayloredmktg.com/rgb/#GR
+//http://www.colorhexa.com/
 //-------------------------------------
-var BACKGROUND_COLOR = "#ddff99";
+var BACKGROUND_COLOR = "#FAFAD2"; //Light Goldenrod Yellow
 var BACKGROUND_BOARD_COLOR = "white";
 
-var BORDER_COLOR = "#666600";  
-var BORDER_STROKE_COLOR = "#ffff66";			//	"yellow";
+var BORDER_COLOR = "#0D8072";  
+var BORDER_STROKE_COLOR = "yellow";
 
 var BOARD_COLOR = "#B7F7DE"; //light green
 var FIXED_BLOCK_COLOR = "#D0D0D0";  //light gray
@@ -74,7 +59,6 @@ var NEXT_BUTTON_BORDER_COLOR = "green";
 // block colors: 
 // from : http://en.wikipedia.org/wiki/File:Pentomino_Puzzle_Solutions.svg	  
 //-------------------------------------------------------------------------
-//	BLOCK_COLOR vector contiene los colores asignados a cada pentomino
 
 var BLOCK_COLOR = [ "#EEAAAA", "#DDBB99", "#CCCC88", "#BBDD99", 
 					"#AAEEAA", "#99DDBB", "#88CCCC", "#99BBDD",
@@ -85,8 +69,6 @@ var BLOCK_COLOR = [ "#EEEE80", "#FFE080", "#FFBF80", "#FFA080", "#FF8080", "#C08
 					"#A680A6", "#8880C0", "#80B9F3", "#80C0B5", "#80CC80", "#A8DF80" ];					
 */
 
-var	COLOR_TETRO_FIJO	= '#112233';	//	gris bastante oscuro
-
 //===========================
 // value base on screen size
 //===========================
@@ -95,46 +77,43 @@ var STAGE_X;
 var STAGE_Y;
 var STAGE_OFFSET_X;
 var STAGE_OFFSET_Y;
-var SCREEN_X;			//	ancho de pantalla en px
-var SCREEN_Y;			//	alto de pantalla en px
+var SCREEN_X;
+var SCREEN_Y;
 
 //==================
 // global variable
 //==================
-var SCREEN_BOARD_X;		//	ancho del tablero en celdas. ordenada X de tablero
-var SCREEN_BOARD_Y;		//	ordenada Y de tablero
-var BOARD_WIDTH;		//	ancho del tablero en unidades de tablero
-var BOARD_HIGH;			//	alto del tablero en unidades de tablero
-var boardStartX;		//	coordenadas para centrar tablero
+var SCREEN_BOARD_X;
+var SCREEN_BOARD_Y;
+var BOARD_WIDTH;
+var BOARD_HIGH;
+var boardStartX;
 var boardStartY;
 
-var gBoardSizeId = 0;	//board size. Identifica la opcion elegida para tamaño de tablero
-var gLevelId = 1;		//play level 
+var gBoardSizeId = 0; //board size
+var gLevelId = 1; //play level 
 
 var gStage;            //kinetic stage
 var gBackgroundLayer;  //kinetic layer
 var gBoardLayer;       //kinetic layer
 var gMessageLayer;     //kinetic layer
 
-var gBlockGroup;		//este array contiene datos de los poliominos / poligonos a tratar (pentominos)
-var gPolyGroup;			//for output on screen
-
-var wCuadromGroup;		//	vector con datos de cuadromino a colocar en posición fija
-var	wPolyCuadrom;		//	datos para colocacion en pantalla
-var	nCuadromId	= 3;	//	identificador del cuadromino fijo a colocar en el tablero
-
+var gBlockGroup; //
+var gPolyGroup;  //for output on screen
 
 //---------------------------
 // For calculate board state 
 //---------------------------
-var gBoardState;		//current board status, ([1..SCREEN_BOARD_X] , [1..SCREEN_BOARD_Y])
-var gTotalBlockCell;	//total block cells
+var gBoardState; //current board status, ([1..SCREEN_BOARD_X] , [1..SCREEN_BOARD_Y])
+var gTotalBlockCell; //total block cells
 var gBlockCellUsed = 0; //how many block cell used
-var gBlockUsed = 0;		//how many block used
+var gBlockUsed = 0; //how many block used
+
 
 //	var	DEBUG = false;
 var	DEBUG = true;
 var	DEBUG2 = false;
+
 
 //==================
 // BEGIN 
@@ -157,104 +136,61 @@ function init()
 	
 	//initial input 
 	document.getElementById('checkButton').checked=false;
-
-	//	*** eliminar ***
-	//	Elimino los botones para elegir tablero y nivel de dificultad
-	//	document.getElementById('boardSizeButton').options[gBoardSizeId].selected = true;
-	//	document.getElementById('levelButton').options[gLevelId-1].selected  = true;
-	//	if (DEBUG) { console.log("lin 143, gBoardSizeId: " + gBoardSizeId ); };
-
+	document.getElementById('boardSizeButton').options[gBoardSizeId].selected = true;
+	document.getElementById('levelButton').options[gLevelId-1].selected  = true;
+	
+	initLanguage();
 	initScreenVariable();
-
 	initScreenPosColor();	
 	
-	gBlockGroup = polyomino5.blockGroup;	//	carga datos de los poliominos
-
-	wCuadromGroup = polyomino4.blockGroup;	//	carga datos de los cuadrominos para posicion fija
-
-	if (DEBUG)		//	para ver que se ha generado
-	{
-		console.log('linea 176, wCuadromGroup: ' + wCuadromGroup );
-		console.log('linea 177, wCuadromGroup.length: ' + wCuadromGroup.length );
-		console.log('linea 178, gBlockGroup.length: ' + gBlockGroup.length );
-	};
+	gBlockGroup = polyomino5.blockGroup;
+	createBlockStyle(gBlockGroup); //external function
+	bindBlockColor(gBlockGroup);
 	
-	
-	createBlockStyle(gBlockGroup);
-		//	funcion externa: polysolution.js
-		//	crea los diferentes estilos de bloque a partir del block inicial
-		//	create all block style from initial block
-		//	(1) rotate 90 degree clockwise 3 times
-		//	(2) left-right flip , than rotate it 90 degree clockwise 3 times
-
-	createBlockStyle(wCuadromGroup);	//	crea los diferentes estilos de bloque a partir del block inicial para los cuadróminos
-	if (DEBUG)		//	para ver que se ha generado
-	{
-		console.log('linea 193, wCuadromGroup.length: ' + wCuadromGroup.length );
-		console.log('linea 194, wCuadromGroup: ' + wCuadromGroup );
-		console.log('linea 195, wCuadromGroup[0].blockStyle[0]: ' + wCuadromGroup[0].blockStyle[0] );
-		console.log('linea 196, wCuadromGroup[0].blockStyle[wCuadromGroup[0].usedStyle]: ' + wCuadromGroup[0].blockStyle[wCuadromGroup[0].usedStyle] );
-		//	console.log('linea 197, gBlockGroup.length: ' + gBlockGroup.length );
-	};
-	
-
-	bindBlockColor(gBlockGroup);			// bind block with fixed color 
-
-	//	asignamos color al tetromino fijo
-	for(var id=0; id < wCuadromGroup.length; id++) {
-		wCuadromGroup[id].color = COLOR_TETRO_FIJO;
-	}
-
 	createStageLayer();
 	
+	if (DEBUG2) { 
+		console.log('linea 153, gPolyGroup: ' + gPolyGroup);		
+	};
 
-	playPuzzle(1); //new puzzle for play
-
-//		if(getDemoReady()) {
-//			//	if (DEBUG) { alert("Iniciamos playPuzzle en getDemoReady; linea 158");	};
-//			playPuzzle(1); //new puzzle for play
-//		} else {
-//			//start demo puzzle, just do once
-//			//	if (DEBUG) { console.log("linea 162: Vamos a setDemoReady(); ");	};
-//			setDemoReady();
-//			visibleStartButton();
-//			demoPuzzle(); //new puzzle for demo
-//		}
+	if(getDemoReady()) {
+		playPuzzle(1); //new puzzle for play
+	} else {
+		//start demo puzzle, just do once
+		setDemoReady();
+		visibleStartButton();
+		demoPuzzle(); //new puzzle for demo
+	}
 	
-	
-
 	//debug 
-	writeMessage("BLOCK_CELL_SIZE " +BLOCK_CELL_SIZE + " -STAGE_X_Y " + STAGE_X + " " + STAGE_Y + " offX:" + STAGE_OFFSET_X + " offY:" + STAGE_OFFSET_Y);
+	//writeMessage("" +BLOCK_CELL_SIZE + " " + STAGE_X + " " + STAGE_Y + "offX:" + STAGE_OFFSET_X + "offY:" + STAGE_OFFSET_Y);
 }
 
-
+//-----------------------------------------------------
+// start a play puzzle 
+// newPuzzle: 1: create new puzzle, 0: back from demo
+//-----------------------------------------------------
 function playPuzzle(newPuzzle)
-// start a play puzzle. newPuzzle: 1: create new puzzle, 0: back from demo
 {
-	//	if (DEBUG) { console.log("linea 232: function playPuzzle(newPuzzle) \n" + "newPuzzle: " + newPuzzle	); };
 	waitIdleDemo();
 
 	hiddenStartButton();
-
-	//	tamaño de tablero fijo. Reemplazo la sentencia que sigue.
 	if(newPuzzle) {
 		restoreBoardSize(); //get board size & level from localstorage 
 	} else {
 		initBoardSize(gBoardSizeId, gLevelId); //back from demo
 	}
-	boardsize = 
 
 	createPuzzle(newPuzzle, true);		
 	enableAllButton();
 	visibleAllButton();
-	if (DEBUG) { console.log("linea 201: despues de visibleAllButtons()");	};
 }
 
-
-function demoPuzzle()		// start a demo puzzle
+//---------------------
+// start a demo puzzle
+//---------------------
+function demoPuzzle()
 {
-	console.log("linea 201: inicia function demoPuzzle()");
-
 	restoreDemoBoardSize(); //get board size & level from localstorage
 	createPuzzle(1, false); //create new puzzle and block can not draggiable for demo only
 	hiddenAllButton();
@@ -270,28 +206,46 @@ function demoButton(pressButton)
 
 function initBoardSize(boardSize, level)
 {
-	//	gBoardSizeId=boardSize;
-	//	gLevelId = level;
+	gBoardSizeId=boardSize;
+	gLevelId = level;
 	
-	//	reNewLevelOption();
-	//	document.getElementById('boardSizeButton').options[gBoardSizeId].selected = true;
-	//	document.getElementById('levelButton').options[gLevelId-1].selected  = true;
+	reNewLevelOption();
+	document.getElementById('boardSizeButton').options[gBoardSizeId].selected = true;
+	document.getElementById('levelButton').options[gLevelId-1].selected  = true;
 }
 
 //-------------------------------------------------------------------
 // initial button language to traditional chinese if system support
 //-------------------------------------------------------------------
-var levelText = "Nivel";
-var noSolutionText = "Sin solución ";
-var nextText = "Próximo";
-var finishText = "Felicitaciones";
+var levelText = "Level";
+var noSolutionText = "No solution ";
+var nextText = "NEXT";
+var finishText = "Congratulation";
 var checkSolutionShift = 130;
+	
+function initLanguage()
+{
+	var sysLang = getSystemLanguage();
 
+	if(sysLang == "zh-tw" || sysLang == "zh-hk") { //tranditional chinese
+		//levelText = "等級";
+		noSolutionText = "無解   ";
+		nextText = " 下一關 ";
+		finishText = " 恭喜完成     ";
+		
+		document.getElementById('hintsButton').value = "提示";
+		document.getElementById('resetButton').value = "重置";
+		document.getElementById('startButton').value = "遊戲開始";
 
+		checkSolutionShift = 90;
+		document.getElementById('checkboxtext').innerHTML = "即時檢查";
+	}	
+}
 
-function initScreenVariable()
+//----------------------------------------------
 // initial screen variable base on screen size
-//	determina tamaño de los elementos basado en tamaño de pantalla en pix
+//----------------------------------------------
+function initScreenVariable() 
 {
 	var screenWidth = 0, screenHeight = 0;
 
@@ -333,23 +287,8 @@ function initScreenVariable()
 	
 	SCREEN_X = screenWidth;
 	SCREEN_Y = screenHeight;
-
-	if (DEBUG)
-	{
-		//	console.log( 'linea 333, SCREEN_X: ' + SCREEN_X );
-		//	console.log( 'linea 334, SCREEN_Y: ' + SCREEN_Y );
-	}
 	
-	//	la siguiente expresion
-	//	(screenWidth%2)? (screenWidth-1):screenWidth) - microCellSize*2
-	//	if (screenWidth%2) == 1 then (screenWidth-1)
-	//	else screenWidth)
-	//	(screenWidth-1):screenWidth) - microCellSize*2
-
 	STAGE_X = ((screenWidth%2)? (screenWidth-1):screenWidth) - microCellSize*2;
-	//	console.log("linea 308, STAGE_X : " + STAGE_X );
-		
-	
 	if(STAGE_X > maxStageX) STAGE_X = maxStageX;
 	if(STAGE_X < microStageX) STAGE_X = microStageX;
 	STAGE_OFFSET_X = Math.floor((screenWidth - STAGE_X)/2);
@@ -375,37 +314,18 @@ function initScreenVariable()
 	}
 }
 
-
-
-function initScreenPosColor()
+//----------------------------------------------
 // initial screen position and background color 
+//----------------------------------------------
+function initScreenPosColor()
 {
-	//	console.log("linea 321: initScreenPosColor");
-
-	//	averiguando algunos parametros
-	/*
-	console.log( "container --> top:" + (STAGE_OFFSET_Y) + "px; left:" + (STAGE_OFFSET_X) + "px");
-	console.log( "boardSize --> top:" + (5) + "px; left:" + (SCREEN_X - 85) + "px");
-	console.log( "level     --> top:" + (25) + "px; left:" + (SCREEN_X - 85) + "px");
-	console.log( "new       --> top:" + (Math.floor(SCREEN_Y/2) - 20) + "px; left:" + (SCREEN_X - 55) + "px");
-	console.log( "reset     --> top:" + (50) + "px; left:" + (SCREEN_X - 55) + "px");
-	console.log( "hints     --> en esta version elimino hints");
-	console.log( "check     --> top:" + (SCREEN_Y - 40) + "px; left:" + (SCREEN_X - checkSolutionShift) + "px");
-	console.log( "start     --> top:" + (Math.floor(SCREEN_Y/2) - 20) + "px; left:" + (SCREEN_X - 120) + "px");
-
-	*/
-	
-	//--------------------
-	//	console.log( "linea 357, top:" + (STAGE_OFFSET_Y) + "px; left:" + (STAGE_OFFSET_X) + "px; position: absolute;");
 	document.getElementById('container').style.cssText = "top:" + (STAGE_OFFSET_Y) + "px; left:" + (STAGE_OFFSET_X) + "px; position: absolute;";
 
-	//	document.getElementById('boardSize').style.cssText = "top:" + (5) + "px; left:" + (SCREEN_X - 85) + "px; position: absolute;";
-	//	document.getElementById('level').style.cssText = "top:" + (25) + "px; left:" + (SCREEN_X - 85) + "px; position: absolute;";
+	document.getElementById('boardSize').style.cssText = "top:" + (5) + "px; left:" + (SCREEN_X - 85) + "px; position: absolute;";
 
-	//	document.getElementById('new').style.cssText = "top:" + (Math.floor(SCREEN_Y/2) - 20) + "px; left:" + (SCREEN_X - 55) + "px; position: absolute;";
-	//	pareciera que este boton no se utiliza
-	//	document.getElementById('newButton').style.cssText = "top:" + (SCREEN_Y - 120) + "px; left:" + (SCREEN_X - 55) + "px; position: absolute;";
-	//	document.getElementById('new').style.cssText = "top:" + (SCREEN_Y - 80) + "px; left:" + (SCREEN_X - 55) + "px; position: absolute;";
+	document.getElementById('level').style.cssText = "top:" + (25) + "px; left:" + (SCREEN_X - 85) + "px; position: absolute;";
+
+	document.getElementById('new').style.cssText = "top:" + (Math.floor(SCREEN_Y/2) - 20) + "px; left:" + (SCREEN_X - 55) + "px; position: absolute;";
 	
 	document.getElementById('reset').style.cssText = "top:" + (50) + "px; left:" + (SCREEN_X - 55) + "px; position: absolute;";
 	
@@ -418,35 +338,23 @@ function initScreenPosColor()
 	document.getElementById('demo').style.cssText = "top:" + (Math.floor(SCREEN_Y/2) - 20) + "px; left:" + (2) + "px; position: absolute;";
 	
 	document.body.style.background = BACKGROUND_COLOR; //body background color
-
-
-	if (DEBUG2)
-	{
-		console.log( "linea 380, container - top:" + (STAGE_OFFSET_Y) + "px; left:" + (STAGE_OFFSET_X) + "px");
-		console.log( "linea 381, newButton - top:" + (Math.floor(SCREEN_Y/2) - 20) + "px; left:" + (SCREEN_X - 55) + "px");
-		console.log( "linea 382, reset - top:" + (50) + "px; left:" + (SCREEN_X - 55) + "px");
-		console.log( "linea 383, hints - top:" + (SCREEN_Y - 80) + "px; left:" + (SCREEN_X - 55) + "px");
-		console.log( "linea 384, check - top:" + (SCREEN_Y - 40) + "px; left:" + (SCREEN_X - checkSolutionShift) + "px");
-		console.log( "linea 385, start - top:" + (Math.floor(SCREEN_Y/2) - 20) + "px; left:" + (SCREEN_X - 120) + "px");
-		console.log( "linea 386, demo - top:" + (Math.floor(SCREEN_Y/2) - 20) + "px; left:" + (2) + "px");	
-	}
-
 }
 
-
-function bindBlockColor(blockGroup)
+//------------------------------
 // bind block with fixed color 
+//------------------------------
+function bindBlockColor(blockGroup)
 {
 	for(var id=0; id < blockGroup.length; id++) {
 		blockGroup[id].color = BLOCK_COLOR[id];
 	}
 }
 
-
-function createStageLayer()		// create stage & layer (KineticJS)
+//----------------------------------
+// create stage & layer (KineticJS)
+//----------------------------------
+function createStageLayer()
 {
-	//	console.log("linea 375: function createStageLayer() ");
-
 	//create stage object
 	gStage = new Kinetic.Stage({
 		container: 'container',
@@ -459,7 +367,6 @@ function createStageLayer()		// create stage & layer (KineticJS)
 	gBoardLayer = new Kinetic.Layer();
 	gMessageLayer = new Kinetic.Layer();
 }
-
 
 //------------------------------------------------
 // Remove child node of stage & layer (KineticJS)
@@ -482,44 +389,37 @@ function clearStageLayer()
 //----------------------------------------------
 function createPuzzle(newPuzzle, activePoly)
 {
-	//	en modo debug la linea que sigue habilita un único pentomino para colocar
-	if (DEBUG2)
-	{
-		var fixedBlock = boardSizeInfo[gBoardSizeId].x * boardSizeInfo[gBoardSizeId].y / 5 - 2; //for debug only
-	} else {
-		//	var fixedBlock = (boardSizeInfo[gBoardSizeId].numOfLevel - gLevelId)* 2;		
-		var fixedBlock = 0;		//	para produccion
-	}
+	//var fixedBlock = boardSizeInfo[gBoardSizeId].x * boardSizeInfo[gBoardSizeId].y / 5 - 1; //for debug only
+	var fixedBlock = (boardSizeInfo[gBoardSizeId].numOfLevel - gLevelId)* 2; 
+	
+	if (DEBUG) { 
+		console.log('linea 396, createPuzzle, gPolyGroup: ' + gPolyGroup);		
+	};
 
+	//	entre otras cosas initBoardState genera el polygroup
 	initBoardState(boardSizeInfo[gBoardSizeId].x,boardSizeInfo[gBoardSizeId].y, fixedBlock, newPuzzle);
 	
+	if (DEBUG) { 
+		console.log('linea 402, createPuzzle: ' + gPolyGroup);		
+	};
+
 	if(activePoly) activePolygon();
 	
-	if (DEBUG) 
-	{
-		//	writeFinishMsg(); //for test only
-	}
+	//writeFinishMsg(); //for test only
 }
 
-
-
+//---------------------
+// initial board state 
+//---------------------
 function initBoardState(boardX, boardY, numOfFixedBlocks, newPuzzle)
-//	estado inicial del tablero de acuerdo al ancho y alto en unidades  
-//	de tablero, numero de block fijos (ayuda) y si es un nuevo puzzle.
 {
-	console.log("linea 505: inicializando el tablero");
-	console.log("linea 506: numOfFixedBlocks: " + numOfFixedBlocks);
-
 	//initial global variable
 	SCREEN_BOARD_X = boardX;
 	SCREEN_BOARD_Y = boardY;
 	BOARD_WIDTH = (SCREEN_BOARD_X * BLOCK_CELL_SIZE);
 	BOARD_HIGH  = (SCREEN_BOARD_Y * BLOCK_CELL_SIZE);
-
-	//	para centrar el tablero en el espacio disponible...
 	boardStartX = (STAGE_X-BOARD_WIDTH)/2;
 	boardStartY = (STAGE_Y-BOARD_HIGH)/2;
-
 	gTotalBlockCell = (SCREEN_BOARD_X * SCREEN_BOARD_Y);
 	gBlockUsed = 0
 	gBlockCellUsed = 0;
@@ -531,38 +431,24 @@ function initBoardState(boardX, boardY, numOfFixedBlocks, newPuzzle)
 	
 	createOperatorObject();
 	addOperator2Layer();
-
-	console.log('linea 494, newPuzzle: ' + newPuzzle )
-
+	
 	if(newPuzzle) { //create new puzzle
-		gBoardState = createBoard(SCREEN_BOARD_X, SCREEN_BOARD_Y);
-			//	funcion externa, polysolution.js
-			//	crea un tablero nuevo y lo devuelve en una matriz de boardX * boardY elementos inicializados a cero
-
-		clearPolyInsertOrder(); //for hints 		
-		randomBlock(gBlockGroup); //external function: orden aleatorio a los bloques (piezas)
+		gBoardState = createBoard(SCREEN_BOARD_X, SCREEN_BOARD_Y); //external function
+		clearPolyInsertOrder(); //for hints 
+		randomBlock(gBlockGroup); //external function
 		randomBlockStyle(gBlockGroup); //external function
 		randomPolyInitPos(gBlockGroup.length - numOfFixedBlocks);
 		
 		clearFixedBlock();
-
-		//	-------------------------------------------------------------------------------------
-		//	Atencion: antes de buscar una solución y colocar bloques fijos se debería colocar el cuadrómino.
-		wAgregaCuadrominoFijo(nCuadromId, {x:1,y:1} );
-
-		//	Atencion elimino para no agregar pentominos fijos (?)
-		//	if(numOfFixedBlocks) {
-		//		//random assign fixed block to board from solved board
-		//		result = findAnswer(gBoardState, 0);		//	busca (al menos) una solucion
-		//		addFixedBlock2Layer(result.op, numOfFixedBlocks);
-		//	};
-		addBlock2Layer(0);		//	numOfFixedBlocks == 0; 
-
-		wAddCuadrom2Layer(nCuadromId); 
-
-	} else { //back from demo, restore save info. En realidad no me interesa la demo por ahora
-		restoreFixedBlock2Layer();				// restore fixed block (from demo saved info)
-		restoreBlock2Layer(numOfFixedBlocks);	// restore polygon blocks to layer
+		if(numOfFixedBlocks) {
+			//random assign fixed block to board from sloved board
+			result = findAnswer(gBoardState, 0);
+			addFixedBlock2Layer(result.op, numOfFixedBlocks);
+		}	
+		addBlock2Layer(numOfFixedBlocks); 
+	} else { //back from demo, restore save info
+		restoreFixedBlock2Layer();
+		restoreBlock2Layer(numOfFixedBlocks);
 		
 		//restore last focus poly
 		if(lastFocusPolyId >= 0) {
@@ -574,34 +460,19 @@ function initBoardState(boardX, boardY, numOfFixedBlocks, newPuzzle)
 	gStage.add(gBackgroundLayer);
 	gStage.add(gBoardLayer);
 	gStage.add(gMessageLayer);	
-	if (DEBUG) { console.log("Linea 571: Se agregaron elementos al gStage");};
 	
 	if(!newPuzzle && checkSolution)checkButton(1); //restore check solution message
 }
 
 //-----------------------------------------
-//	Random the initial position of polygon
-//	asigna posición inicial aleatoria al poliomino
-//	llamada por function initBoardState(boardX, boardY, numOfFixedBlocks, newPuzzle)
+// Random the initial position of polygon 
 //-----------------------------------------
 var polyInitPos;
 function randomPolyInitPos(availablePoly)
 {
 	var midId = (availablePoly > 5)?Math.floor((availablePoly+1)/2): availablePoly;
-	
 	var distance =  Math.floor((STAGE_X - BLOCK_CELL_SIZE*2) / midId);
 	
-	if (DEBUG)
-	{
-		console.log("linea 544, (availablePoly > 5)?Math.floor((availablePoly+1)/2): availablePoly;");
-		console.log("availablePoly: " + availablePoly);
-		//	console.log("Math.floor((availablePoly+1)/2): availablePoly;");
-		//	console.log( Math.floor((availablePoly+1)/2));
-		console.log( 'midId: ' + midId );
-		console.log( 'distance: ' + distance );
-
-	}
-
 	polyInitPos=[];
 	for(var id=0; id < availablePoly; id++) {
 		polyInitPos[id] = id;	
@@ -637,59 +508,29 @@ function getPolyInitPos(id)
 	return polyInitPos[id];
 }
 
-
 //-------------------------
 // clear fixed block group
 //-------------------------
-var gFixedPolyGroup= [];	// contiene los bloques fijos (precolocados)
+var gFixedPolyGroup= [];
 function clearFixedBlock()
 {
 	gFixedPolyGroup= [];
 }
 
 //--------------------------
-//	Add fixed block to layer
-//	aqui se estarian colocando en el tablero los poligonos fijos para ayuda en niveles de baja dificultad
+// Add fixed block to layer
 //--------------------------
-function addFixedBlock2Layer(op, numOfFixedBlocks)	// coloca poliominos fijos (ya tiene solucion)
+function addFixedBlock2Layer(op, numOfFixedBlocks)
 {
-	if (DEBUG)
-	{
-		console.log("linea 623: Ingresando a addFixedBlock2Layer(op, numOfFixedBlocks)");
-		//	console.log("op.leftRightFlip: " + op.leftRightFlip );
-		//	console.log("op.upDownFlip   : " + op.upDownFlip    );
-		//	console.log("op.rotate       : " + op.rotate        );
-		console.log("numOfFixedBlocks: " + numOfFixedBlocks );
-	}
-
 	var fixedPoly;
 	var polyId =0;
-
 
 	for(var id=0; id < gBlockGroup.length; id++) {
 		//order: insert order, < 0: without insert it 
 		if(gBlockGroup[id].order >= 0 && gBlockGroup[id].order < numOfFixedBlocks) {
-
-			//	block recibirá la posición relativa de cada cuadradito
 			var block = dupOpBlock(gBlockGroup[id].blockStyle[gBlockGroup[id].usedStyle], op, 0);
-
-			var poly = block2Polygon(block);	//	convierte sistema de coordenadas de bloque a coordenadas de poligono
-			
-			if (DEBUG)
-			{
-				console.log('id: ' + id );
-				console.log('gBlockGroup[id].order: ' + gBlockGroup[id].order );
-				console.log('gBlockGroup[id].pos.x: ' + gBlockGroup[id].pos.x );
-				console.log('gBlockGroup[id].pos.y: ' + gBlockGroup[id].pos.y );
-				console.log('linea 647, poly: ' + poly );
-			};	
-
-			var pos = solvedPos2BoardPos(op, gBlockGroup[id].pos)
-			if (DEBUG)
-			{
-				console.log('linea 684, pos: ' + pos.x + ',' + pos.y );
-			};	
-
+			var poly = block2Polygon(block); 
+			var pos = SlovedPos2BoardPos(op, gBlockGroup[id].pos)
 
 			var leftUpPos = getLeftUpPos(block);
 			var centerPos = getCenterPos(block);
@@ -744,18 +585,12 @@ function restoreFixedBlock2Layer()
 }
 
 //--------------------------------------------
-//	dupOpBlock(srcBlock, op, normalize) 
-//	duplica el block según la op(eracion) solicitada y
-//	normalize: block need normalize or not (ordena por 'y', luego por 'x' y hace que primer elemento sea 0,0
+// duplicate a block base on operator method
+// normalize: block need normalize or not
 //--------------------------------------------
 function dupOpBlock(srcBlock, op, normalize)
 {
 	var dstBlock;
-
-	if (DEBUG)
-	{
-		//	console.log('linea 716, srcBlock: ' + srcBlock );
-	};
 	
 	//duplicate block	
 	dstBlock = [];
@@ -794,10 +629,10 @@ function dupOpBlock(srcBlock, op, normalize)
 }
 
 //--------------------------------------------------------
-// convert solved board position to board state position
+// convert sloved board position to board state position
 // for (gBoardState)
 //--------------------------------------------------------
-function solvedPos2BoardPos(op, pos)
+function SlovedPos2BoardPos(op, pos)
 {
 	var boardPos = { x:pos.x, y:pos.y };
 	
@@ -821,8 +656,6 @@ function solvedPos2BoardPos(op, pos)
 //--------------------------
 function addBackgroundLayer()
 {
-	//	console.log("linea 736: adding Background Layer");
-
 	var borderWidth = Math.round(BLOCK_CELL_SIZE/2);
 	var textOffset = Math.round(BLOCK_CELL_SIZE/6);
 	var titleFontSize = Math.round(BLOCK_CELL_SIZE*1.35);
@@ -831,21 +664,22 @@ function addBackgroundLayer()
 		x: textOffset, 
 		y: textOffset,
 		text: "Pentominos Puzzle",
-		fill: 'green',					//	fill: BACKGROUND_COLOR,
+		fill: BACKGROUND_COLOR,
 		fontSize: titleFontSize,
-		//fontFamily: "Calibri",	
+		//fontFamily: "Calibri",
+	
 		fontStyle:"bold",
 		shadowColor: 'black',
-		shadowBlur: 05,
-		shadowOffset: [4,4],			//	2, 2],
-		shadowOpacity:0.7
+		shadowBlur: 10,
+		shadowOffset: [2, 2],
+		shadowOpacity:0.3
 	});	
 
 	var titleText2 = new Kinetic.Text({
 		x: textOffset, 
 		y: STAGE_Y-titleFontSize - 15,
-		text: "Willie está investigando",
-		fill: 'blue',						//	diferencia aprobada
+		text: "智慧拼盤",
+		fill: BACKGROUND_COLOR,
 		fontSize: titleFontSize,
 		//fontFamily: "Calibri",
 		fontStyle:"bold",
@@ -876,7 +710,6 @@ function addBackgroundLayer()
 		fill: BACKGROUND_COLOR
 	});	
 	
-	//	fondo del tablero vacio
 	var boardBackground = new Kinetic.Rect({
 		x: boardStartX,
 		y: boardStartY,
@@ -885,8 +718,6 @@ function addBackgroundLayer()
 		fill: BACKGROUND_BOARD_COLOR
 	});		
 
-
-	//	colores para los bordes del tablero
 	var borderUp = new Kinetic.Rect({
 		x: boardStartX-borderWidth,
 		y: boardStartY-borderWidth,
@@ -979,13 +810,6 @@ function addBoard2Layer()
 //-----------------------------------------
 function addBlock2Layer(fixedBlock)
 {
-	if (DEBUG) 
-	{
-		console.log("linea 877: Ingresando a addBlock2Layer(fixedBlock); ");
-		console.log("fixedBlock: " + fixedBlock );
-	}
-
-
 	createPolygon(gBlockGroup, fixedBlock);
 
 	for(var g = 0; g < gPolyGroup.length; g++) {
@@ -1042,13 +866,11 @@ function restoreBlock2Layer(fixedBlock)
 //-----------------------------------------------------------------------------
 function polyRegular(poly)
 {
-	//	poly es un vector con datos de poligonos a trazar
-
 	var size = poly.length;
 	var tmpIndex;
 	var mode= 0; hMode = 0, vMode = 2;
 	
-	//	if (DEBUG)	{	console.log('LINEA 964: antes de regular: ' + poly );	};
+	//console.log(poly);
 	
 	for(var i = 0; i < size-1; i++) {
 		tmpIndex = -1;
@@ -1121,8 +943,7 @@ function polyRegular(poly)
 			break;
 		}
 	}
-	
-	//	if (DEBUG)	{	console.log('despues de regular: ' + poly);	};
+	//console.log(poly);
 }
 
 //-------------------------------------------------------------------
@@ -1150,22 +971,9 @@ function insert2Poly(polyPoint, blockCell)
 
 //-----------------------------------------------------------------
 // convert block coordinate system to polygon coordinate (kinetic)
-//	convierte sistema de coordenadas de bloque a coordenadas de pantalla
-//	con estas ultimas se puede dibujar en la pantalla
 //-----------------------------------------------------------------
-function block2Polygon(block)		//	convierte los bloques de un poliomino en coordenas de poligono para dibujar
+function block2Polygon(block)
 {
-	/*
-	if (DEBUG)
-	{
-		console.log(" Ingresando a block2Polygon(block) donde block es: " );
-		for ( var lambda = 0; lambda < block.length; lambda++ )
-		{
-			console.log( "    block [" + lambda + "] " + block [lambda].x + " " + block [lambda].y );
-		}
-	}
-	*/
-
 	var polyPoint = [];
 	var poly = [];
 	
@@ -1177,13 +985,6 @@ function block2Polygon(block)		//	convierte los bloques de un poliomino en coord
 		poly.push(polyPoint[i].x * BLOCK_CELL_SIZE);
 		poly.push(polyPoint[i].y * BLOCK_CELL_SIZE);
 	}
-
-	/*
-	if (DEBUG)
-	{
-		console.log(" poly: " + poly );
-	}
-	*/
 	
 	return poly;
 }	  
@@ -1293,7 +1094,7 @@ function block2OutlineShape(block, x, y, color, lineWidth)
 function getPositionOfPoly(polyX, polyY, offsetX, offsetY)
 {
 	var boardX, boardY;
-	var precision = 10;
+	var precision = 10; //精確度(Precision)
 	var rx = ry = -1;
 	
 	for(var x = 0; x < SCREEN_BOARD_X; x++) {
@@ -1628,10 +1429,6 @@ function clonePolygon(savePolyGroup, fixedBlock)
 
 function activePolygon()
 {
-	if (DEBUG)
-	{
-		console.log('linea 1633, gPolyGroup: ' + gPolyGroup );
-	}
 	//inactivePolygon();
 	for(var g = 0; g < gPolyGroup.length; g++) {
 		var poly = gPolyGroup[g].poly;
@@ -1678,7 +1475,7 @@ function activePolygon()
 				showOperatorObject(this); //enable operator if insert failed
 			}
 			
-			//	dumpBoard(gBoardState); //for debug only
+			//dumpBoard(gBoardState); //for debug only
 		});
 		
 		poly.on('click', function() {
@@ -1689,14 +1486,14 @@ function activePolygon()
 			setShadow(this);
 			showOperatorObject(this); //enable operator at new position
 
-			//	dumpBoard(gBoardState); //for debug only
+			//dumpBoard(gBoardState); //for debug only
 		});	
-	
+/*	
 		poly.on('dragmove click', function() {
 			// for debug only
-			//	writeMessage("(x,y) = (" + this.getPosition().x + "," + this.getPosition().y + '), offset(x,y)=(' + this.getOffset().x + ", " + this.getOffset().y  + "), scale = (" + this.getScale().x + ", " + this.getScale().y + "), RotationDeg = " + this.getRotationDeg() );
+			//writeMessage("(x,y) = (" + this.getPosition().x + "," + this.getPosition().y + '), offset(x,y)=(' + this.getOffset().x + ", " + this.getOffset().y  + "), scale = (" + this.getScale().x + ", " + this.getScale().y + "), RotationDeg = " + this.getRotationDeg() );
 		});
-		
+*/		
 	}
 }
 
@@ -1724,9 +1521,7 @@ function rotate90(poly, time)
 
 	
 	if(animateRotate90Object.isRunning()) return;
-	
-	//	if (DEBUG) {console.log("linea 1624: poly.getRotationDeg(): " + poly.getRotationDeg()); }
-	
+	//console.log(poly.getRotationDeg());
 	if(typeof time == "undefined") time = 150;
 	animateRotate90Object.init(poly, time);
 	animateRotate90Object.start();	
@@ -1801,7 +1596,7 @@ var rotateObject; //a rotate object, display on the focus polygon
 var flipObject;   //a flip object, display on the focus polygon
 
 //--------------------------------
-// create flip & rotate operator (los simbolitos para rotar y voltear )
+// create flip & rotate operator
 //--------------------------------
 function createOperatorObject()
 {
@@ -1989,7 +1784,7 @@ function hideOperatorObject()
 // find board answer
 // inUsedFromPoly: need set used block or not 
 //---------------------------------------------
-function findAnswer(board, inUsedFromPoly)		//	busca / encuentra respuestas puzzle
+function findAnswer(board, inUsedFromPoly)
 {
 	var op = { rotate:0, leftRightFlip:0, upDownFlip:0 };
 	var answerBoard = screenBoard2AnswerBoard(board, op);
@@ -2011,8 +1806,8 @@ function findAnswer(board, inUsedFromPoly)		//	busca / encuentra respuestas puzz
 	result = answer.find();
 	
 	if(result.totalAnswer > 0) {
-		//notes: copy back to solvedBoard not solvedBoard[0]
-		result.solvedBoard = dupAnswerBoard2ScreenBoard(result.solvedBoard[0], op);
+		//notes: copy back to slovedBoard not slovedBoard[0]
+		result.slovedBoard = dupAnswerBoard2ScreenBoard(result.slovedBoard[0], op);
 		result.op = op;
 	}
 	return result;
@@ -2242,18 +2037,11 @@ function check()
 
 	if(result.totalAnswer <= 0) {
 		writeMessage(noSolutionText);
-		
-		console.log("No solution, " + "(" + noSolutionText + ")");
-
+		//console.log("No solution, " + "(" + result.elapsedTime + ")");
 	} else {
 		writeMessage("");
-		if (DEBUG)
-		{
-			console.log("function check()");
-			dumpBoard(result.solvedBoard[0]);
-		//	console.log("Elapsed Time : " + result.elapsedTime + "s");
-		}
-		
+		//dumpBoard(result.slovedBoard[0]);
+		//console.log("Elapsed Time : " + result.elapsedTime + "s");
 	}
 	return result.totalAnswer;
 }
@@ -2266,7 +2054,7 @@ function checkButton(checked)
 	checkSolution = checked;
 
 	writeMessage("");
-	if(gBlockCellUsed >= gTotalBlockCell) return; //solved
+	if(gBlockCellUsed >= gTotalBlockCell) return; //sloved
 	if(checkSolution) check();
 }
 
@@ -2280,7 +2068,6 @@ function checkButton(checked)
 function waitDemoFinish(newPuzzle)
 {
 	if(demoFinish()) {
-		if (DEBUG) { console.log("linea 2159: Iniciamos playPuzzle en waitDemoFinish");	};
 		playPuzzle(newPuzzle);	
 	} else {
 		setTimeout(function() { waitDemoFinish(newPuzzle);}, 100);
@@ -2376,7 +2163,7 @@ function hintsButton()
 
 	disableAllButton();
 	if(!animateBlockBack(moveTime)) moveTime = 0;
-	flashObject = animateHintsBlock(result.solvedBoard, result.op, moveTime);
+	flashObject = animateHintsBlock(result.slovedBoard, result.op, moveTime);
 	
 	enableButtonAfterStopRunning(flashObject);
 }
@@ -2387,9 +2174,8 @@ function hintsButton()
 function disableAllButton()
 {
 	//select 
-	//	*** eliminar ***
-	//	document.getElementById('boardSizeButton').disabled=true;
-	//	document.getElementById('levelButton').disabled=true;
+	document.getElementById('boardSizeButton').disabled=true;
+	document.getElementById('levelButton').disabled=true;
 
 	document.getElementById('hintsButton').disabled=true;
 	document.getElementById('newButton').disabled=true;
@@ -2425,8 +2211,8 @@ function hiddenStartButton()
 function enableAllButton()
 {
 	//select 
-	//	document.getElementById('boardSizeButton').disabled=false;
-	//	document.getElementById('levelButton').disabled=false;
+	document.getElementById('boardSizeButton').disabled=false;
+	document.getElementById('levelButton').disabled=false;
 
 	document.getElementById('hintsButton').disabled=false;
 	document.getElementById('newButton').disabled=false;
@@ -2444,8 +2230,8 @@ function enableAllButton()
 function visibleAllButton()
 {
 	//select 
-	//	document.getElementById('boardSizeButton').style.visibility='visible';
-	//	document.getElementById('levelButton').style.visibility='visible';
+	document.getElementById('boardSizeButton').style.visibility='visible';
+	document.getElementById('levelButton').style.visibility='visible';
 
 	document.getElementById('hintsButton').style.visibility='visible';
 	document.getElementById('newButton').style.visibility='visible';
@@ -2464,8 +2250,8 @@ function visibleAllButton()
 function hiddenAllButton()
 {
 	//select 
-	//	document.getElementById('boardSizeButton').style.visibility='hidden';
-	//	document.getElementById('levelButton').style.visibility='hidden';
+	document.getElementById('boardSizeButton').style.visibility='hidden';
+	document.getElementById('levelButton').style.visibility='hidden';
 
 	document.getElementById('hintsButton').style.visibility='hidden';
 	document.getElementById('newButton').style.visibility='hidden';
@@ -2514,10 +2300,10 @@ function animateBlockBack(moveTime)
 //---------------------------------
 // random flash a available block 
 //---------------------------------
-function animateHintsBlock(solvedBoard, op, startFlashTime)
+function animateHintsBlock(slovedBoard, op, startFlashTime)
 {
 	var	flashOutline;
-	var result = findAvailableBlock(solvedBoard);
+	var result = findAvailableBlock(slovedBoard);
 	
 	var startX = boardStartX + result.x * BLOCK_CELL_SIZE;	
 	var startY = boardStartY + result.y * BLOCK_CELL_SIZE;	
@@ -2538,11 +2324,11 @@ function animateHintsBlock(solvedBoard, op, startFlashTime)
 // random find a available block 
 // (next to the exist one)
 //------------------------------------------------
-function findAvailableBlock(solvedBoard) 
+function findAvailableBlock(slovedBoard) 
 {
 	var fromVertical = Math.floor(Math.random()*2); //0: search from horizon, 1: search from vertical
-	var boardX = solvedBoard.length-1;
-	var boardY = solvedBoard[0].length-1;
+	var boardX = slovedBoard.length-1;
+	var boardY = slovedBoard[0].length-1;
 	var blockId, polyId;
 
 	if(fromVertical) { 
@@ -2550,7 +2336,7 @@ function findAvailableBlock(solvedBoard)
 		outloopV0:
 		for(var x= 1; x < boardX; x++) {
 			for(var y= 1; y < boardY; y++) {
-				blockId = solvedBoard[x][y]-1;
+				blockId = slovedBoard[x][y]-1;
 				polyId = gBlockGroup[blockId].polyId; //convert block id to poly id
 				if(polyId >= 0 && gPolyGroup[polyId].poly.pos.x < 0) {
 					//block is not in gBoardState, found it !
@@ -2563,7 +2349,7 @@ function findAvailableBlock(solvedBoard)
 		outloopV1:
 		for(var y= 1; y < boardY; y++) {
 			for(var x= 1; x < boardX; x++) {
-				if (solvedBoard[x][y]-1 == blockId) {
+				if (slovedBoard[x][y]-1 == blockId) {
 					break outloopV1;
 				}	
 			}
@@ -2574,7 +2360,7 @@ function findAvailableBlock(solvedBoard)
 		outloopH:
 		for(var y= 1; y < boardY; y++) {
 			for(var x= 1; x < boardX; x++) {
-				blockId = solvedBoard[x][y]-1;
+				blockId = slovedBoard[x][y]-1;
 				polyId = gBlockGroup[blockId].polyId; //convert block id to poly id
 
 				if(polyId >= 0 && gPolyGroup[polyId].poly.pos.x < 0) {
@@ -2649,8 +2435,11 @@ function resetButton()
 //---------------------------
 // Input Selection info
 //---------------------------
-var boardSizeInfo = [			//	esta variable contiene dimensiones y niveles del tablero a utilizar
-	{x:8, y:8, numOfLevel:1 }
+var boardSizeInfo = [ 
+	{x:6, y:5,  numOfLevel:3 }, 
+	{x:8, y:5,  numOfLevel:3 }, 
+	{x:10, y:5, numOfLevel:4 }, 
+	{x:10, y:6, numOfLevel:4 } 
 ];
 
 //------------------------
@@ -2661,7 +2450,7 @@ function boardSizeButton(id)
 	gBoardSizeId = parseInt(id)-1;
 	gLevelId = 1;
 	
-	//	reNewLevelOption(); 
+	reNewLevelOption(); 
 	createPuzzle(1, true);
 }
 
@@ -2681,14 +2470,12 @@ function reNewLevelOption()
 {
 	var select = document.getElementById('levelButton');
 	var option;
-
-	//	if (DEBUG) { console.log("reNewLevelOption(), lin 2496");	};  
-
+  
 	//---------------------------------------------
 	// clear select options
 	// reference: http://www.somacon.com/p542.php
 	//---------------------------------------------
-	//	select.innerHTML = "";
+	select.innerHTML = "";
 	
 	//---------------------------------------------------------------
 	// insert option to select 
@@ -2718,8 +2505,8 @@ function reNewLevelOption()
 //-------------------------
 function writeFinishMsg()
 {
-	var textHigh=20;
-	var textWidth = 10;
+	var textHigh=26;
+	var textWidth = 12;
 	var scaleX = Math.floor((STAGE_X -10) / (finishText.length * textWidth));
 	var scaleY = Math.floor((STAGE_Y/3)/textHigh) ;
 	
@@ -2761,11 +2548,8 @@ function nextButton()
 
 	var textAllWidth = nextText.length * textWidth+ padSize*2;
 	var textAllHigh  = textHigh+padSize*2;
-
-
-	//	var scaleX = Math.floor(STAGE_X/textAllWidth/4);
-	var scaleX = Math.floor(STAGE_X/textAllWidth/2);
-	var scaleY = Math.floor(STAGE_Y/textHigh/10) ;
+	var scaleX = Math.floor(STAGE_X/textAllWidth/4);
+	var scaleY = Math.floor(STAGE_Y/textHigh/8) ;
 
 	var centerX = STAGE_X * 3/4;
 	var centerY = STAGE_Y * 4/5;
@@ -2776,6 +2560,9 @@ function nextButton()
 		text: nextText,
 		fill: NEXT_BUTTON_TEXT_COLOR,
 		fontSize: textHigh,
+		//fontFamily: "sans-serif",
+		//fontFamily:"微軟正黑體",
+		//fontStyle:"bold",
 		  
 		align: 'center',
 		width: textAllWidth,
@@ -2851,17 +2638,10 @@ function setNextLevel()
 			//reset board size 
 			gBoardSizeId = 0;
 		}
-		//	reNewLevelOption();
-		if (DEBUG)
-		{
-			//	console.log("gBoardSizeId: " + gBoardSizeId );
-			//	console.log("document.getElementById('boardSizeButton'): " + document.getElementById('boardSizeButton') );
-			//	console.log("document.getElementById('boardSizeButton').options[gBoardSizeId]: " + document.getElementById('boardSizeButton').options[gBoardSizeId] );
-			//	console.log("document.getElementById('boardSizeButton').options[gBoardSizeId].selected: " + document.getElementById('boardSizeButton').options[gBoardSizeId].selected );
-		}
-		//	document.getElementById('boardSizeButton').options[gBoardSizeId].selected = true;
+		reNewLevelOption();
+		document.getElementById('boardSizeButton').options[gBoardSizeId].selected = true;
 	} else {
-		//	document.getElementById('levelButton').options[gLevelId-1].selected  = true;
+		document.getElementById('levelButton').options[gLevelId-1].selected  = true;
 	}
 	saveBoardSize(gBoardSizeId, gLevelId);
 }
@@ -2929,7 +2709,7 @@ function restoreDemoBoardSize()
 	var boardSize=parseInt(getStorage("polyDemoBoardSize"));
 	
 	if(isNaN(boardSize) || ++boardSize >= boardSizeInfo.length) boardSize = 0;
-	setStorage("polyDemoBoardSize", boardSize);			//save to localstorage
+	setStorage("polyDemoBoardSize", boardSize); //save to localstorage
 
 	initBoardSize(boardSize, boardSizeInfo[boardSize].numOfLevel);
 }
@@ -2976,11 +2756,7 @@ function getStorage(key)
 {
 	var value = null;
 	if(typeof(window.localStorage) != 'undefined'){ 
-		value = window.localStorage.getItem(key);
-		if (DEBUG2)
-		{
-			console.log("linea 2973, window.localStorage.getItem(key): " + window.localStorage.getItem(key));
-		}
+		value = window.localStorage.getItem(key); 
 	} 
 	return value;
 }
@@ -3008,9 +2784,9 @@ function writeMessage(message) {
 	var context = gMessageLayer.getContext();
 	
 	gMessageLayer.clear();
-	context.font = '20pt arial';
-	context.fillStyle = '#882211';
-	context.fillText(message, STAGE_X/2-message.length*5, STAGE_Y/2+BLOCK_CELL_SIZE * (SCREEN_BOARD_Y/1.2));
+	context.font = '32pt arial';
+	context.fillStyle = 'red';
+	context.fillText(message, STAGE_X/2-message.length*9.5, STAGE_Y/2+BLOCK_CELL_SIZE * (SCREEN_BOARD_Y/2));
 	gBoardLayer.draw(); //FOR: firefox first time will not display 10/21/2012
 }
 
@@ -3032,131 +2808,7 @@ function dumpBoard(board)
 				buf += "0" + board[x][y] + " ";
 			}			
 		}
-		console.log("buf: " + buf );
+		console.log(buf);
 	}
 	console.log("");
 }
-
-
-//=======================================================================
-//	funciones w
-//=======================================================================
-function wAgregaCuadrominoFijo(id, pos)	// coloca cuadromino fijo
-//	id: identifica el cuadromino fijo
-//	pos: posición del cuadromino en el tablero.
-//	esta funcion debe tomar cuadrómino de una tabla que vincule 
-//	nro de problema con cuadrómino a colocar y posición
-{
-	if (DEBUG)
-	{
-		console.log("linea 3042: Ingresando a wAgregaCuadrominoFijo(id, pos)");
-		console.log("id: " + id );
-		console.log("pos.x: " + pos.x );
-		console.log("pos.y: " + pos.y );
-		console.log("wCuadromGroup[id].blockStyle[0]: " + wCuadromGroup[id].blockStyle[0] );
-
-	}
-
-	var fixedPoly;
-	var polyId =0;
-	
-			//	block recibirá la posición relativa de cada cuadradito
-			//	usamos blockStyle[0] porque es el único definido. Diferencia con pentominos
-			var block = dupOpBlock(wCuadromGroup[id].blockStyle[0], 0, 0);
-
-			var poly = block2Polygon(block);	//	convierte sistema de coordenadas de bloque a coordenadas de poligono
-			/*
-			if (DEBUG)
-			{
-				console.log('gBlockGroup[id].order: ' + gBlockGroup[id].order );
-				console.log('poly: ' + poly );
-			};
-			*/
-
-			//	pos viene como parametro
-			//	var pos = solvedPos2BoardPos(op, gBlockGroup[id].pos)
-
-			var leftUpPos = getLeftUpPos(block);
-			var centerPos = getCenterPos(block);
-			
-			var offsetX = centerPos.x+leftUpPos.x;
-			var offsetY = centerPos.y+leftUpPos.y;
-			
-			var startX = boardStartX + (pos.x-1 + offsetX) * BLOCK_CELL_SIZE;	
-			var startY = boardStartY + (pos.y-1 + offsetY) * BLOCK_CELL_SIZE;	
-			
-			/*
-				el tramo que sigue no debiera ser necesario por no tomo elementos del grupo de pentominos
-
-			gBlockGroup[id].polyId = -polyId - 1; //for link to fixed poly (fixed polyId  = -polyId+1)
-
-			gFixedPolyGroup[polyId] = {};	
-			gFixedPolyGroup[polyId].block = block;
-			*/
-	
-			fixedPoly = new Kinetic.Polygon({
-				x: startX,
-				y: startY,
-				offset: [ offsetX * BLOCK_CELL_SIZE, offsetY *  BLOCK_CELL_SIZE ],
-				points: poly,
-				fill: FIXED_BLOCK_COLOR, 
-				stroke: FIXED_BORDER_COLOR,
-				strokeWidth: 2
-			});	
-
-			/*
-			gFixedPolyGroup[polyId].poly = fixedPoly;
-			
-			fixedPoly.blockId = id; //index for reference to gBlockGroup
-			fixedPoly.polyId = polyId; //index for reference to gFixedPolyGroup
-			fixedPoly.centerPos = centerPos;
-			*/
-		
-			gBoardLayer.add(fixedPoly);
-
-			//	veamos cuales son los parametros que se van a pasar
-			if (DEBUG2)
-			{
-				console.log('gBoardState---->');
-				dumpBoard(gBoardState);
-				//	console.log( 'linea 3109, SCREEN_BOARD_X: ' + SCREEN_BOARD_X );
-				//	console.log( 'linea 3110, SCREEN_BOARD_Y: ' + SCREEN_BOARD_Y );
-				//	console.log( 'linea 3111, block         : ' + block          );
-				console.log( 'linea 3112, pos           : ' + pos            );
-				console.log( 'linea 3113, id+1          : ' + id+1           );
-			}
-
-
-			//|hasta tanto encuentre el error
-			if(!insertBlockToBoard(gBoardState, SCREEN_BOARD_X, SCREEN_BOARD_Y, block, pos, id+1)) {
-				dumpBoard(gBoardState);
-				throw new Error("Design error");
-			}
-
-			polyId++;
-
-
-	//dumpBoard(gBoardState);
-}
-
-
-
-//-----------------------------------------
-function wAddCuadrom2Layer(id)		//	crea el bloque cuadromino y lo agrega al layer
-{
-	if (DEBUG)
-	{
-		console.log('linea 3151,                id: ' + id );
-		console.log('linea 3152,     wCuadromGroup: ' + wCuadromGroup );
-		console.log('linea 3153, wCuadromGroup[id].x: ' + wCuadromGroup.x );
-		console.log('linea 3153, wCuadromGroup[id].y: ' + wCuadromGroup[id].y );
-	}
-	//	wCreateCuadrado(wCuadromGroup[id]);
-	wCreateCuadrado(wCuadromGroup);
-
-	for(var g = 0; g < wPolyCuadrom.length; g++) {
-		//	gBoardLayer.add(gPolyGroup[g].poly);
-		gBoardLayer.add(wCuadromGroup[0].poly);
-	}
-}
-

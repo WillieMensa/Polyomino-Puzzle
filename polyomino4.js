@@ -44,7 +44,7 @@ info: "Tetromino X 2 (1991's homework)\n\n" +
 	  "http://en.wikipedia.org/wiki/Tetromino\n",
 	  
 //blockGroup -> blockStyle -> block -> blockCell
-blockGroup: [
+blockGroup:[
 	{ //[0]
 		//Block 1:
 		// +-----+
